@@ -14,14 +14,16 @@
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#pragma once
+
+
 #include <arduino.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <HardwareSerial.h>
+#include <util/atomic.h>
 
 #define BYTE unsigned char
-#define ASCII_BUFFER_Len 250u
+#define ASCII_BUFFER_LEN 250u
 #define RTU_BUFFER_LEN 127u
 #define HOLDINGREG_LEN 64u
 
@@ -38,17 +40,16 @@ class ModbusA
 	static uint8_t deviceAddress;
 	static char asciiBuffer[ASCII_BUFFER_LEN];
 	static uint8_t rtuBuffer[RTU_BUFFER_LEN];
-	static int rtu_buffer_stat;
-	static int ascii_buffer_stat;
+	static int rtuBuffer_stat;
+	static int asciiBuffer_stat;
 	static HardwareSerial *pSerial;
 
-	void convertToAscii();
-	void convertToRtu();
+	void rtuToAscii();
+	void asciiToRtu();
 	int readHoldingRegisters();
-	int readInputRegisters();
 	int writeMultipleRegisters();
 	int writeSingleRegister();
-	uint8_t CheckLRC(uint8_t *data, uint8_t byte_count);
-	void ReadSerialData();
-	void FlushBuffers();
+	uint8_t computeLRC(uint8_t *data, uint8_t byte_count);
+	void readSerialPort();
+	void flushBuffers();
 };
